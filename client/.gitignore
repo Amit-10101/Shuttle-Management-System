@@ -25,6 +25,4 @@ dist-ssr
 
 .env
 src/pages/AdminRoutesPage.tsx
-src/pages/BookingManagementPage.tsx
-src/pages/DriverManagementPage.tsx
 src/services
