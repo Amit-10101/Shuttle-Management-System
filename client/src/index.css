@@ -98,3 +98,30 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+@layer components {
+	.sidebar-link {
+		@apply flex items-center p-2 hover:bg-gray-100 rounded transition ease-in-out duration-300;
+	}
+	.sidebar {
+		@apply fixed left-0 h-full bg-white text-black border-e flex flex-col items-center z-50 transition-all duration-300 ease-in-out;
+		width: 4rem;
+	}
+	.sidebar:hover {
+		@apply justify-start;
+		width: 14rem;
+	}
+	.sidebar-nav {
+		@apply flex flex-col p-4 space-y-4;
+	}
+	.sidebar-link span {
+		@apply ml-4 hidden group-hover:inline-block;
+	}
+
+	.transition-md {
+		@apply transition-all ease-in-out duration-300;
+	}
+	.transition-lg {
+		@apply transition-all ease-in-out duration-500;
+	}
+}

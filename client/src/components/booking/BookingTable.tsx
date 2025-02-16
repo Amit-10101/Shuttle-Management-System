@@ -197,8 +197,8 @@
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '../ui/button';
-// import { Booking } from '@/types';
-import { bookings } from '@/utils/data';
+import { Booking, Route, User, Vehicle, Driver } from '@/types';
+// import { bookings } from '@/utils/data';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import BookingDetails from './BookingDetails';
 import {
@@ -219,6 +219,7 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination';
 import DatePicker from '@/components/DatePicker';
+import { useGetBookingsQuery } from '@/api/bookingApi';
 
 const bookingStatus: { [key: string]: string } = {
 	Accepted: 'bg-gray-200 text-gray-800',
@@ -233,11 +234,15 @@ const bookingStatus: { [key: string]: string } = {
 };
 
 const BookingTable: React.FC = () => {
+	const { data: bookings, isLoading } = useGetBookingsQuery({ search: '' });
+	console.log(bookings);
 	const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
 	const getStatusColor = (status: string): string => {
 		return bookingStatus[status] || 'bg-gray-100 text-gray-800';
 	};
+
+	if (isLoading || !bookings) return <div>Loading...</div>;
 
 	return (
 		<div className="pb-6 pt-8 px-6 mb-6 bg-white rounded-lg shadow">
@@ -278,14 +283,16 @@ const BookingTable: React.FC = () => {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{bookings.map((booking, idx) => (
+						{bookings.map((booking: Booking, idx) => (
 							<TableRow
 								key={booking._id}
 								className={`${idx % 2 === 1 && 'bg-slate-100'}`}
 							>
 								<TableCell className="font-medium">{booking._id}</TableCell>
 								<TableCell className="font-medium">
-									{booking.userId.username}
+									{(booking.userId as User).firstName +
+										' ' +
+										(booking.userId as User).lastName}
 								</TableCell>
 								<TableCell>
 									<span
@@ -293,16 +300,22 @@ const BookingTable: React.FC = () => {
 											booking.status
 										)}`}
 									>
-										{booking.status}
+										{booking.status ?? '-'}
 									</span>
 								</TableCell>
-								<TableCell>{booking.routeId.pickupPoint}</TableCell>
-								<TableCell>{booking.routeId.dropOffPoint}</TableCell>
-								<TableCell>{booking.vehicle}</TableCell>
-								<TableCell>{booking.requestedPickupTime}</TableCell>
-								<TableCell>{booking.pickupTime}</TableCell>
-								<TableCell>{booking.plannedDrop}</TableCell>
-								<TableCell>{booking.actualDrop}</TableCell>
+								<TableCell>
+									{(booking.routeId as Route).pickupPoint ?? '-'}
+								</TableCell>
+								<TableCell>
+									{(booking.routeId as Route).dropOffPoint ?? '-'}
+								</TableCell>
+								<TableCell>
+									{(booking.vehicle as Vehicle)?.licensePlate ?? '-'}
+								</TableCell>
+								<TableCell>{booking.requestedPickupTime ?? '-'}</TableCell>
+								<TableCell>{booking.pickupTime ?? '-'}</TableCell>
+								<TableCell>{booking.plannedDrop ?? '-'}</TableCell>
+								<TableCell>{booking.actualDrop ?? '-'}</TableCell>
 								<TableCell>
 									<Sheet>
 										<SheetTrigger asChild>
@@ -316,19 +329,26 @@ const BookingTable: React.FC = () => {
 										<SheetContent>
 											<BookingDetails
 												bookingId={booking._id}
-												empName={booking.userId.username}
-												empId={booking.userId._id}
+												empName={(booking.userId as User).username}
+												empId={(booking.userId as User)._id}
 												status={booking.status}
 												// date={booking.date}
-												// busNumber={booking.vehicle.busNumber}
+												busNumber={
+													(booking.vehicle as Vehicle)?.licensePlate
+												}
 												// busCode={booking.vehicle.busCode}
-												// busType={booking.vehicle.busType}
-												// capacity={booking.vehicle.capacity}
-												pickupLocation={booking.routeId.pickupPoint}
+												busType={(booking.vehicle as Vehicle)?.make}
+												capacity={(booking?.vehicle as Vehicle)?.capacity}
+												pickupLocation={
+													(booking.routeId as Route).pickupPoint
+												}
 												pickupTime={booking.requestedPickupTime}
-												dropLocation={booking.routeId.dropOffPoint}
+												dropLocation={
+													(booking.routeId as Route).dropOffPoint
+												}
 												// dropTime={booking.plannedDrop}
-												driverName={booking.driverId?.name}
+												driverName={(booking.driverId as Driver)?.name}
+
 												// driverPhone={booking.driver.phone}
 												// driverRating={booking.driver.rating}
 											/>

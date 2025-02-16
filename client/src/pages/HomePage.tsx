@@ -11,8 +11,8 @@
 
 // export default HomePage;
 
-import DriverStatus from '../components/drivers/DriverStatus';
-import BookingTable from '../components/bookings/BookingTable';
+import DriverStatus from '../components/driver/DriverStatus';
+import BookingTable from '../components/booking/BookingTable';
 // import SearchBar from '../components/SearchBar';
 
 const HomePage: React.FC = () => {

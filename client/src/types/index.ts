@@ -1,18 +1,41 @@
 export interface User {
 	_id: string;
 	username: string;
+	firstName: string;
+	lastName: string;
+	phone: string;
+	email: string;
 	role: 'student' | 'staff' | 'admin';
+}
+
+export interface Vehicle {
+	_id: string;
+	make: string;
+	model: string;
+	year: number;
+	licensePlate: string;
+	capacity: number;
+	status: 'Active' | 'Inactive' | 'Maintenance';
 }
 
 export interface Driver {
 	_id: string;
 	name: string;
+	username: string;
+	email: string;
+	mobile: string;
+	vehicle: Vehicle;
 	availability: {
 		date: string;
 		startDuty?: string;
 		endDuty?: string;
 		breaks?: { start: string; end: string }[];
 	}[];
+	licenseNumber: string;
+	experienceYears: number;
+	status?: 'online' | 'offline';
+	ratings?: number;
+	review_count?: number;
 }
 
 export interface Route {
@@ -20,6 +43,9 @@ export interface Route {
 	name: string;
 	pickupPoint: string;
 	dropOffPoint: string;
+	distance: number; // in kilometers
+	duration: number; // in minutes
+	stops: string[]; // list of stop points
 }
 
 // export interface Booking {
@@ -52,7 +78,7 @@ export interface Route {
 // Booking Management
 export interface Booking {
 	_id: string;
-	userId: User;
+	userId: User | string;
 	status:
 		| 'Accepted'
 		| 'Waiting'
@@ -63,9 +89,9 @@ export interface Booking {
 		| 'On Going'
 		| 'Cancelled'
 		| 'Dropped';
-	routeId: Route;
-	driverId?: Driver;
-	vehicle: string | null;
+	routeId: Route | string;
+	driverId: Driver | string;
+	vehicle: Vehicle | string | null;
 	requestedPickupTime: string;
 	pickupTime: string | null;
 	plannedDrop: string | null;
